@@ -1,2 +1,3 @@
 # add_distributions
-A Blender addon to create a mesh based on a probability distribuiton or random values generated from one
+
+- A Blender add-on to create a mesh based on a probability distribution or random values generated from one.
