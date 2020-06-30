@@ -44,6 +44,7 @@ class add_pdf_normal(bpy.types.Operator):
         object      = bpy.data.objects.new(mesh.name, mesh)
         collection  = bpy.data.collections.get("Collection")
         collection.objects.link(object)
+        object.location = bpy.context.scene.cursor.location
         bpy.context.view_layer.objects.active = object
 
         vertices_all = list(zip(x, [0] * npoints, z))
