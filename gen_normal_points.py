@@ -30,15 +30,43 @@ class add_pdf_normal(bpy.types.Operator):
     bl_label = "Add a normal curve"
     bl_options = {'REGISTER', 'UNDO'}
     
+    npoints: IntProperty(
+        name = "Number of points",
+        default = 50,
+        min = 10,
+        soft_min = 10,
+    )
+    xsd: FloatProperty(
+        name = "Standard deviation",
+        default = 1,
+        min = 0,
+        soft_min = 0,
+    )
+    xmin: FloatProperty(
+        name = "Minimum of X",
+        default = -3,
+    )
+    xmax: FloatProperty(
+        name = "Maximum of X",
+        default =  3,
+    )
+    zscale: FloatProperty(
+        name = "Scale for Z axis",
+        default = 12,
+        min = 0,
+        soft_min = 0,
+    )
+    jointpoints: BoolProperty(
+        name = "Joint the points",
+        default = True,
+    )
+
     def execute(self, context):   
 
-        scale_x = 3
-        scale_z = 12
-
-        npoints = context.preferences.addons['add_distributions'].preferences.ncases
-
-        x = np.linspace(-9, 9, npoints)
-        z = scale_z * norm.pdf(x / scale_x)
+        n = self.npoints
+        
+        x = np.linspace(self.xmin, self.xmax, n)
+        z = self.zscale * norm.pdf(x * self.xsd)
 
         mesh        = bpy.data.meshes.new("normal_curve")
         object      = bpy.data.objects.new(mesh.name, mesh)
@@ -47,13 +75,32 @@ class add_pdf_normal(bpy.types.Operator):
         object.location = bpy.context.scene.cursor.location
         bpy.context.view_layer.objects.active = object
 
-        vertices_all = list(zip(x, [0] * npoints, z))
-        edges_all = list(zip(range(0, npoints - 1), range(1, npoints)))
+        vertices_all = list(zip(x, [0] * n, z))
+        if (self.jointpoints):
+            edges_all = list(zip(range(0, n - 1), range(1, n)))
+        else:
+            edges_all = []
         faces_all = []
 
         mesh.from_pydata(vertices_all, edges_all, faces_all)
 
         return {'FINISHED'}     
+
+    def invoke(self, context, event):
+        wm = context.window_manager
+        return wm.invoke_props_dialog(self)    
+    
+    def draw(self, context):
+        layout = self.layout
+        col = layout.column()
+        col.prop(self, "npoints")
+        col.prop(self, "xsd")
+        row = layout.row()
+        row.prop(self, "xmin")
+        row.prop(self, "xmax")
+        col = layout.column()
+        col.prop(self, "zscale")
+        col.prop(self, "jointpoints")
         
 classes = (
     add_pdf_normal,
