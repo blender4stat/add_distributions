@@ -33,12 +33,13 @@ from . import (
     prefs,
     gen_normal_points,
     gen_bivar_normal_points,
-    add_rnd_normal,
+    gen_normal_random,
+    gen_bivar_normal_random,
 )
     
 classes =  ui.classes + prefs.classes
 classes += gen_normal_points.classes + gen_bivar_normal_points.classes
-classes += add_rnd_normal.classes
+classes += gen_normal_random.classes + gen_bivar_normal_random.classes
     
 def register():
     for cls in classes:
