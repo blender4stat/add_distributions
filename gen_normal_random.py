@@ -26,7 +26,7 @@ from numpy.random import MT19937
 from numpy.random import RandomState, SeedSequence
 
 
-class add_rnd_normal(bpy.types.Operator):
+class gen_random_normal(bpy.types.Operator):
     """Add a histogram of random normal data"""
     bl_idname = "object.add_random_normal"
     bl_label = "Add a histogram of random normal data"
@@ -163,7 +163,7 @@ class add_rnd_normal(bpy.types.Operator):
             
         
 classes = (
-    add_rnd_normal,
+    gen_random_normal,
 )
 
 def register():
