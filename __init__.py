@@ -33,10 +33,12 @@ from . import (
     prefs,
     gen_normal_points,
     gen_bivar_normal_points,
+    add_rnd_normal,
 )
     
 classes =  ui.classes + prefs.classes
 classes += gen_normal_points.classes + gen_bivar_normal_points.classes
+classes += add_rnd_normal.classes
     
 def register():
     for cls in classes:
