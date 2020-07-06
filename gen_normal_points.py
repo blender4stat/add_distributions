@@ -60,13 +60,43 @@ class add_pdf_normal(bpy.types.Operator):
         name = "Joint the points",
         default = True,
     )
+    userperc: BoolProperty(
+        name = "Use percentile points",
+        default = False,
+    )
+    percmin: FloatProperty(
+        name = "Lowest percentile (-1)",
+        default = 0,
+        min = 0,
+        soft_min = 0,
+        max = 1,
+        soft_max = 1,
+    )
+    percmax: FloatProperty(
+        name = "Highest percentile (+1)",
+        default = 1,
+        min = 0,
+        soft_min = 0,
+        max = 1,
+        soft_max = 1,
+    )
 
     def execute(self, context):   
 
         n = self.npoints
         
-        x = np.linspace(self.xmin, self.xmax, n)
-        z = self.zscale * norm.pdf(x * self.xsd)
+        if (self.userperc):
+            xp = np.linspace(self.percmin, self.percmax, n + 2)
+            print(xp)
+            xp = xp[1:n + 1]
+            print(xp)
+            x = norm.ppf(xp)
+            print(x)
+            z = self.zscale * norm.pdf(x * self.xsd)
+            print(z)
+        else:
+            x = np.linspace(self.xmin, self.xmax, n)
+            z = self.zscale * norm.pdf(x * self.xsd)
 
         mesh        = bpy.data.meshes.new("normal_curve")
         object      = bpy.data.objects.new(mesh.name, mesh)
@@ -101,6 +131,11 @@ class add_pdf_normal(bpy.types.Operator):
         col = layout.column()
         col.prop(self, "zscale")
         col.prop(self, "jointpoints")
+        col = layout.column()
+        col.prop(self, "userperc")
+        col.prop(self, "percmin")
+        col.prop(self, "percmax")
+        
         
 classes = (
     add_pdf_normal,
